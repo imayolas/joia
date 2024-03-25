@@ -8,6 +8,19 @@ export enum UserAccessLevel {
   View = 'view',
 }
 
+export enum UserAccessLevelActions {
+  Owner = 'owner',
+  EditAndShare = 'edit_and_share',
+  Use = 'use',
+  View = 'view',
+  Remove = 'remove',
+}
+
+export enum ShareScope {
+  Everybody = 'everybody',
+  User = 'user',
+}
+
 export enum SidebarInfoCardType {
   Onboarding = 'onboarding',
 }

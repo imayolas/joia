@@ -1,6 +1,6 @@
 import {
-  UserOnWorkspaceContext,
   createUserOnWorkspaceContext,
+  type UserOnWorkspaceContext,
 } from '@/server/auth/userOnWorkspaceContext'
 import { scopePostByWorkspace } from '@/server/posts/postUtils'
 import { protectedProcedure } from '@/server/trpc/trpc'

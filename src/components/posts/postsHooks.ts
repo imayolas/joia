@@ -265,6 +265,7 @@ export const usePostSharePerform = () => {
     onSuccess: () => {
       void utils.posts.getShares.invalidate()
     },
+    retry: false,
   })
 }
 export const usePostShareUpdateAccessLevel = () => {

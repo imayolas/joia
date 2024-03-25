@@ -1,20 +1,19 @@
 import { createUserOnWorkspaceContext } from '@/server/auth/userOnWorkspaceContext'
-import { updateShareAccessLevelService } from '@/server/shares/services/updateShareAccessLevel.service'
+import { updateShareService } from '@/server/shares/services/updateShare.service'
 import { protectedProcedure } from '@/server/trpc/trpc'
-import { UserAccessLevelActions } from '@/shared/globalTypes'
+import { ShareScope } from '@/shared/globalTypes'
 import { z } from 'zod'
 
 const zInput = z.object({
   shareId: z.string(),
-  accessLevel: z.nativeEnum(UserAccessLevelActions),
+  scope: z.nativeEnum(ShareScope),
 })
 
-export const postsShareUpdateAccessLevel = protectedProcedure
+export const postsUpdateSharingScope = protectedProcedure
   .input(zInput)
   .mutation(async ({ ctx, input }) => {
-    const userId = ctx.session.user.id
-
-    const share = await ctx.prisma.share.findFirstOrThrow({
+    const invitingUserId = ctx.session.user.id
+    const share = await ctx.prisma.share.findUniqueOrThrow({
       where: {
         id: input.shareId,
       },
@@ -32,8 +31,10 @@ export const postsShareUpdateAccessLevel = protectedProcedure
     const context = await createUserOnWorkspaceContext(
       ctx.prisma,
       workspaceId,
-      userId,
+      invitingUserId,
     )
-
-    return await updateShareAccessLevelService(ctx.prisma, context, input)
+    return await updateShareService(ctx.prisma, context, {
+      email: input.email,
+      postId: input.postId,
+    })
   })

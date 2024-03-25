@@ -12,6 +12,7 @@ export const inviteToWorkspaceService = async (
   workspaceId: string,
   invitingUserId: string,
   invitedUserEmail: string,
+  disableInvitationEmail = false,
   source: WorkspaceInviteSources = WorkspaceInviteSources.Direct,
 ) => {
   return await prismaAsTrx(prisma, async (prisma) => {
@@ -36,18 +37,21 @@ export const inviteToWorkspaceService = async (
     })
 
     if (invitedUser) {
-      return await handleUserExists(
+      await handleUserExists(
         prisma,
         workspace.id,
         invitingUserId,
         invitedUser.id,
+        disableInvitationEmail,
       )
+      return null
     }
     return await handleUserDoesNotExist(
       prisma,
       workspace.id,
       invitingUserId,
       invitedUserEmail,
+      disableInvitationEmail,
       source,
     )
   })
@@ -58,6 +62,7 @@ const handleUserExists = async (
   workspaceId: string,
   invitingUserId: string,
   invitedUserId: string,
+  disableInvitationEmail: boolean,
 ) => {
   if (invitingUserId === invitedUserId) {
     throw new TRPCError({
@@ -110,6 +115,7 @@ const handleUserExists = async (
 
   const invitingUserOrEmail = invitingUser.name ?? invitingUser.email!
 
+  if (disableInvitationEmail) return
   await sendEmailToInvitedUser(
     workspaceId,
     invitingUserOrEmail,
@@ -123,6 +129,7 @@ const handleUserDoesNotExist = async (
   workspaceId: string,
   invitingUserId: string,
   invitedUserEmail: string,
+  disableInvitationEmail: boolean,
   source: WorkspaceInviteSources,
 ) => {
   const existingInvite = await prisma.workspaceInvite.findUnique({
@@ -141,7 +148,7 @@ const handleUserDoesNotExist = async (
     throw new TRPCError({
       code: 'BAD_REQUEST',
       message:
-        'The user is already invited to the workspace, but has not yet accepted the invitation.',
+        'The user has already been invited to the workspace but has not yet accepted the invitation.',
     })
   }
 
@@ -176,12 +183,14 @@ const handleUserDoesNotExist = async (
 
   const invitingUserOrEmail = invitingUser.name ?? invitingUser.email!
 
-  await sendEmailToInvitedUser(
-    workspaceId,
-    invitingUserOrEmail,
-    invitedUserEmail,
-    workspace.name,
-  )
+  if (!disableInvitationEmail) {
+    await sendEmailToInvitedUser(
+      workspaceId,
+      invitingUserOrEmail,
+      invitedUserEmail,
+      workspace.name,
+    )
+  }
 
   return invite
 }
