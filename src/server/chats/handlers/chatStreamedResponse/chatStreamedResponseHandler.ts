@@ -67,7 +67,7 @@ async function handler(req: NextRequest) {
     const allUnprocessedMessages = [...appConfigVersion.messages, ...messages]
 
     const {
-      messages: allMessages,
+      messages: xxxxxxxALL,
       assistantTargetMessage: assistantTargetMessage,
     } = prepareMessagesForPrompt(allUnprocessedMessages)
 
@@ -121,7 +121,7 @@ async function handler(req: NextRequest) {
       {
         provider: providerSlug,
         model,
-        messages: allMessages,
+        messages: xxxxxxxALL,
         onToken,
         onFinal,
       },
