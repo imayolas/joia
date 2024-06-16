@@ -129,6 +129,7 @@ model App {
     shares            Share[]
     usersMeta         AppsOnUsers[]
     files             AssetsOnApps[]
+    keyValues         KeyValue[]
 }
 
 model AppsOnUsers {
@@ -300,4 +301,15 @@ model AiProviderModel {
     aiProvider   AiProvider @relation(fields: [aiProviderId], references: [id], onDelete: Cascade)
 
     @@unique([aiProviderId, slug])
+}
+
+model KeyValue {
+    id        String   @id @default(cuid())
+    key       String
+    value     String
+    type      String
+    appId     String
+    app       App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

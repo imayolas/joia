@@ -28,6 +28,12 @@ export enum SidebarInfoCardType {
   Onboarding = 'onboarding',
 }
 
+export enum KeyValueType {
+  String = 'string',
+  Number = 'number',
+  Boolean = 'boolean',
+}
+
 export type PrismaTrxClient = Omit<
   PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
