@@ -1,13 +1,16 @@
 import { getProviderAndModelFromFullSlug } from '@/server/ai/aiUtils'
 import { getAiProviderKVsWithFallbackToInternalKeysService } from '@/server/ai/services/getProvidersForWorkspace.service'
 import { ChatAuthor, OpenAiModelEnum } from '@/shared/aiTypesAndMappers'
-import type { PrismaTrxClient } from '@/shared/globalTypes'
-import type { PrismaClient } from '@prisma/client'
+import type {
+  PrismaClientOrTrxClient,
+  PrismaTrxClient,
+} from '@/shared/globalTypes'
 import { HttpError } from 'http-errors'
 import OpenAI, { type ClientOptions } from 'openai'
 
 export const handleChatTitleCreate = async (
-  prisma: PrismaClient,
+  // Todo: Do prismaTrxClient only
+  prisma: PrismaClientOrTrxClient,
   workspaceId: string,
   userId: string,
   chatId: string,
