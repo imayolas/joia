@@ -12,10 +12,6 @@ export interface ComponentWithAppId {
   appId: string
 }
 
-export enum AppType {
-  Chat = 'chat',
-}
-
 export enum AppEngineType {
   Default = 'default',
   Custom = 'custom',
