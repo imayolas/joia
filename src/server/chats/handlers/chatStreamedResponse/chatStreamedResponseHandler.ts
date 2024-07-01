@@ -24,7 +24,7 @@ const zBody = z.object({
 })
 
 const RESPONSE_HEADERS = {
-  'Content-Type': 'text/plain; charset=utf-8',
+  'Content-Type': 'text/event-stream',
 }
 
 // We must handle errors globally with 2 possibilities:
